@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Hostman.Configuration;
 using Hostman.Database;
+using Hostman.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -93,8 +94,17 @@ namespace Hostman
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            Context dbContext)
         {
+            // TODO: Migration strategy
+
+            dbContext.Database.EnsureCreated();
+
+            // Setting up the pipeline
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -103,6 +113,8 @@ namespace Hostman
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<UserMiddleware>();
+
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }

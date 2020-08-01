@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Hostman.Database.Model
@@ -12,6 +13,11 @@ namespace Hostman.Database.Model
         [Required]
         public string Nickname { get; set; }
 
-        public bool Enabled { get; set; }
+        public ICollection<Authentication> Authentications { get; set; }
+
+        public User()
+        {
+            this.Authentications = new HashSet<Authentication>();
+        }
     }
 }
