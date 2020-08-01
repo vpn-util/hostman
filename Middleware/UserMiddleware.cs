@@ -1,9 +1,7 @@
-using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Hostman.Database;
-using Hostman.Database.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,7 +39,7 @@ namespace Hostman.Middleware
             // Resolving the user object by its authentication information from
             // the database
 
-            var authentication = await dbContext.Authentications.Include(
+            var authentication = await dbContext.Authentication.Include(
                     a => a.User)
                 .Where(a => a.Issuer == issuer)
                 .Where(a => a.Subject == subject)

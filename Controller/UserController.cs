@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Hostman.Database;
 using Hostman.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,8 +18,23 @@ namespace Hostman.Controller
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] Model.User user)
+        public async Task<IActionResult> Put([FromBody] User user)
         {
+            // Validating that the potentially modified nickname meets the
+            // requirements
+
+            if (user.Nickname.Length < Model.User.NICKNAME_MIN_LENGTH)
+            {
+                return this.BadRequest("Nickname too short!");
+            }
+
+            if (user.Nickname.Length > Model.User.NICKNAME_MAX_LENGTH)
+            {
+                return this.BadRequest("Nickname too long!");
+            }
+
+            // Saving the changes
+
             this.AuthenticatedUser.Nickname = user.Nickname;
             await this.DatabaseContext.SaveChangesAsync();
 

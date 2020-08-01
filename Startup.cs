@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Hostman.Configuration;
 using Hostman.Database;
 using Hostman.Middleware;
@@ -91,6 +92,11 @@ namespace Hostman
                     .Build();
 
                 opt.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .AddJsonOptions(opt =>
+            {
+                opt.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter());
             });
         }
 

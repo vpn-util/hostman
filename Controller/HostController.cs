@@ -1,10 +1,14 @@
+using System.Linq;
+using System.Threading.Tasks;
+using Hostman.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hostman.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class HostController : ControllerBase
+    public class HostController : ApiController
     {
         [HttpPost]
         public IActionResult Create()
@@ -13,9 +17,19 @@ namespace Hostman.Controller
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return this.Ok("TODO: Return host");
+            var host = await this.DatabaseContext.Entry(this.AuthenticatedUser)
+                .Collection(u => u.Host)
+                .Query()
+                .Where(h => h.Id == id)
+                .Select(h => Host.From(h))
+                .SingleOrDefaultAsync();
+
+            if (host == null)
+                return this.NotFound();
+
+            return this.Ok(host);
         }
 
         [HttpPut("{id:int}")]

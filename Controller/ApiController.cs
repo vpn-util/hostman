@@ -15,12 +15,12 @@ namespace Hostman.Controller
         /// The database identity of the user that performs the current
         /// request.
         /// </summary>
-        protected Database.Model.User AuthenticatedUser
+        protected Database.User AuthenticatedUser
         {
             get
             {
                 var dbUser = this.HttpContext.Items[UserMiddleware.USER_MODEL]
-                    as Database.Model.User;
+                    as Database.User;
 
                 if (dbUser == null)
                 {
